@@ -5,6 +5,9 @@
 
 import pickle, random
 from main import main
+from userProfile import User
+
+User = User()
 
 class Xeria():
 
@@ -23,22 +26,34 @@ class Xeria():
     
     def newQuestion(self, userQuestion):
         print("Xeria : I'm not sure how to respond to '",
-              userQuestion,"' how would you respond?")
+              userQuestion,"' how would you respond?\n")
         firstResp = input("First Response: ")
         secondResp = input("Second Response: ")
         thirdResp = input("Third Response: ")
         self.questions.update({userQuestion : [firstResp, secondResp, thirdResp]})
-        print("Xeria: Thank you for teaching me new things!")
+        print("\nXeria: Thank you for teaching me new things!")
+
+    def askQuestion(self):
+        botQuestion = random.choice(list(self.questions)) #picks a random question from memory
+        print("Xeria: "+botQuestion)
+        userInput = input(">>") #learns a new response to the question if asked
+        self.questions[botQuestion].append(userInput)#adds the response to memory
+        print("\nXeria: "+ random.choice(self.generalResponse))
 
     def scanInput(self, userInput):
-        if '?' in userInput:
-            if userInput in self.questions:
+        if '?' in userInput: #sees if the user asked a question
+            if userInput in self.questions: #if it knows some awnsers it responds with one
                 randPick = random.randint(0,2)
                 print("Xeria: " + self.questions[userInput][randPick])
-            else: self.newQuestion(userInput)
+            else: self.newQuestion(userInput) #if it doesnt know the question it asks about it
         else:
-            self.generalResponse.append(userInput)
-            print("Xeria: "+ random.choice(self.generalResponse))
+            self.generalResponse.append(userInput) #adds the users input to general memory
+            if random.randint(1,4) == 2: #bot has 25% chance of asking a question from memory
+                self.askQuestion()
+            elif random.randint(1,6) == 2 and User.metUser == False: #chance to get to know the user
+                User.meetUser()    
+            else:
+                print("Xeria: "+ random.choice(self.generalResponse)) #response like normal
             
 
     def getGreeting(self):

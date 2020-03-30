@@ -1,5 +1,6 @@
 from os import system
 
+
 def main(ChatBot):
     system("clear")
     print("\n\tWelcome to Xeria ChatBot 2020!",
@@ -7,6 +8,7 @@ def main(ChatBot):
           "\n\tand more! Just start talking to begin.",
           "\n\n\tType 'exit' to leave and 'h' for more commands.\n")
     print("Xeria:", ChatBot.getGreeting()) 
+    
     
     #this is the main loop where the user asks questions and the bot responds
     while True:
