@@ -21,5 +21,4 @@ class User():
         self.age = input(">>")
         print("Xeria: What do you do?")
         self.job = input(">>")
-        print("Xeria: Thank you :)")
-        
+        print("\nXeria: Thanks "+self.name+"!")
