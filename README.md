@@ -9,7 +9,7 @@ Updated chatbot! Xeria version 2020
     it asks the user how they will respond and it
     remebers that for the future.
   - Xeria starts a local user profile that saves certian
-    things it learns from the user. this is data is #not
+    things it learns from the user. User data is NOT
     saved between uses. 
   - This bot auto loads and saves when started/stopped
    
