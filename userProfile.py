@@ -2,23 +2,27 @@
 
 class User():
 
-    def __init__(self, name = "User",
+    def __init__(self, metUser = False,
+                 name = "User",
                  age = 0,
                  job = "Unemployed",
-                 metUser = False
+                 currentActions = [],
+
                  ):
+        self.metUser = metUser
         self.name = name
         self.age = age
         self.job = job
-        self.metUser = metUser
+        self.currentActions = currentActions
+        
 
     def meetUser(self):
         self.metUser = True
-        print("Xeria: I want to get to know you better!")
-        print("Xeria: What is your name?")
+        print("\nXeria: I want to get to know you better!")
+        print("\nXeria: What is your name?")
         self.name = input(">>")
-        print("Xeria: How old are you?")
+        print("\nXeria: How old are you?")
         self.age = input(">>")
-        print("Xeria: What do you do?")
+        print("\nXeria: What do you do?")
         self.job = input(">>")
         print("\nXeria: Thanks "+self.name+"!")
