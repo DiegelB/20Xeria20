@@ -3,6 +3,12 @@
    its responses. It will save and load from the
    class'''
 
+#TODO:
+#      - add tool box:
+#        - command line interface
+#        - calculator
+#        - dice
+
 import pickle, random
 from loop import main
 from userProfile import User
@@ -24,12 +30,20 @@ class Xeria():
         self.questions = questions
     
     def scanInput(self, userInput):
-        if '?' in userInput: #sees if the user asked a question
+        nameRules = ["what" in userInput.lower() and "name" in userInput.lower() or
+                     "whats" in userInput.lower() and "name" in userInput.lower()]
+
+        if all(nameRules): #first thing it does is scan the input for asking a name, avoids adding name question to file.
+            print("\nXeria: My name is Xeria, whats yours?")
+            User.name = input(">>") #inputs the user name into memory
+            print("\nXeria: ",str(self.getGreeting().rstrip()),User.name) #reads out a greeting with user's name
+        elif userInput == '': #second checks for empty strings to avoid adding to memory
+            print("\nXeria: Why so quiet?")
+        elif '?' in userInput: #third sees if the user asked a question
             if userInput in self.questions: #if it knows some awnsers it responds with one
                 print("\nXeria: " + str(random.choice(self.questions[userInput])))
             else: self.newQuestion(userInput, userInput) #if it doesnt know the question it asks about it
-        elif userInput == '': #checks for empty strings to avoid adding to memory
-            print("Xeria: Why so quiet?")
+
         else: #if all input conditions are not met then it runs the output funciton
             self.outputOptions(userInput)
             
@@ -50,7 +64,6 @@ class Xeria():
 
     def genResponse(self, userInput):
         botResponse = random.choice(self.generalResponse)
-        self.scanBotOutput(botResponse, userInput) #scans the bots response for certian key words
         if random.randint(1,6) == 1 and User.metUser == True: #if it has met the user it has a chance to personalize the message
             print("\nXeria: "+ botResponse+" "+User.name)
         else:
@@ -60,6 +73,7 @@ class Xeria():
         print("\nXeria: You said you were "+str(random.choice(User.currentActions))+". Hows that?")
 
     def scanBotOutput(self, botResponse, userInput):
+        #this scans the user input for current actions they are doing.
         rules = ["what".lower() in botResponse and "doing".lower() in botResponse or
                  "whats".lower() in botResponse and "up".lower() in botResponse or
                  "what".lower() in botResponse and "up".lower() in botResponse] #if these are found it will add the input to memory
@@ -82,12 +96,13 @@ class Xeria():
         botQuestion = random.choice(list(self.questions)) #picks a random question from memory
         print("\nXeria: "+botQuestion)
         userInput = input(">>") #learns a new response to the question if asked
+        self.scanBotOutput(botQuestion, userInput) #scans the bots response for certian key words
         self.questions[botQuestion].append(userInput)#adds the response to memory
         self.genResponse(userInput)
   
     def getGreeting(self):
         self.greetings.clear() #clears the greetings list because it populates from memory. this allows to add more greetings
-        lineAmt = 22 #CHANGE THIS TO LINE AMOUNT IN greetings.txt
+        lineAmt = 21 #CHANGE THIS TO LINE AMOUNT IN greetings.txt
         
         #open the greeting file the populate Xeria's greeting list
         file = open('greetings.txt', 'r')
@@ -95,7 +110,7 @@ class Xeria():
             self.greetings.append(file.readline())
 
         #chooses a random greeting then prints it.
-        randGreeting = random.randint(0, lineAmt)
+        randGreeting = random.randint(1, lineAmt)
         return self.greetings[randGreeting]
 
     def saveBot(self):

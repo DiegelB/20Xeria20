@@ -17,10 +17,12 @@ class User():
         
 
     def meetUser(self):
-        self.metUser = True
+        self.metUser = True #sets this to true to avoid calling this fuction twice.
         print("\nXeria: I want to get to know you better!")
-        print("\nXeria: What is your name?")
-        self.name = input(">>")
+        if self.name == "User": #if the user already told the bot their name it skips asking again
+            print("\nXeria: What is your name?")
+            self.name = input(">>")
+        
         print("\nXeria: How old are you?")
         self.age = input(">>")
         print("\nXeria: What do you do?")
