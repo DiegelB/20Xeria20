@@ -4,6 +4,8 @@
    class'''
 
 #TODO:
+#      - game functions when bot is bored
+#      
 #      - add tool box:
 #        - command line interface
 #        - calculator
@@ -29,6 +31,7 @@ class Xeria():
         self.greetings = greetings
         self.questions = questions
     
+    #there is no save function in scanInput. it only saves input to memory in outputOptions or newQuestion
     def scanInput(self, userInput):
         nameRules = ["what" in userInput.lower() and "name" in userInput.lower() or
                      "whats" in userInput.lower() and "name" in userInput.lower()]
@@ -42,7 +45,8 @@ class Xeria():
         elif '?' in userInput: #third sees if the user asked a question
             if userInput in self.questions: #if it knows some awnsers it responds with one
                 print("\nXeria: " + str(random.choice(self.questions[userInput])))
-            else: self.newQuestion(userInput, userInput) #if it doesnt know the question it asks about it
+            elif random.randint(1,2) == 2: self.genResponse() #has a chance to respond from general memory.
+            else: self.newQuestion(userInput) #if it doesnt know the question it asks about it
 
         else: #if all input conditions are not met then it runs the output funciton
             self.outputOptions(userInput)
@@ -55,14 +59,14 @@ class Xeria():
             self.askQuestion()
         elif random.randint(1,5) == 1 and User.metUser == False: #chance to get to know the user
             User.meetUser()
-            self.genResponse(userInput) 
+            self.genResponse() 
         elif random.randint(1,4) == 1 and User.currentActions: #25% chance to print a message about the users current actions
              self.customResponse()
         else:
              #response like normal
-            self.genResponse(userInput)
+            self.genResponse()
 
-    def genResponse(self, userInput):
+    def genResponse(self):
         botResponse = random.choice(self.generalResponse)
         if random.randint(1,6) == 1 and User.metUser == True: #if it has met the user it has a chance to personalize the message
             print("\nXeria: "+ botResponse+" "+User.name)
@@ -83,14 +87,14 @@ class Xeria():
             return
 
     #if the bot encounters a new question it will ask how the user responds
-    def newQuestion(self, userQuestion, userInput):
+    def newQuestion(self, userQuestion):
         print("\nXeria : I'm not sure how to respond to '",
               userQuestion,"' how would you respond?\n")
         firstResp = input("First Response: ")
         secondResp = input("Second Response: ")
         thirdResp = input("Third Response: ")
         self.questions.update({userQuestion : [firstResp, secondResp, thirdResp]}) #saves the question and responses to a dict
-        self.genResponse(userInput)
+        self.genResponse()
 
     def askQuestion(self):
         botQuestion = random.choice(list(self.questions)) #picks a random question from memory
@@ -98,7 +102,7 @@ class Xeria():
         userInput = input(">>") #learns a new response to the question if asked
         self.scanBotOutput(botQuestion, userInput) #scans the bots response for certian key words
         self.questions[botQuestion].append(userInput)#adds the response to memory
-        self.genResponse(userInput)
+        self.genResponse()
   
     def getGreeting(self):
         self.greetings.clear() #clears the greetings list because it populates from memory. this allows to add more greetings
