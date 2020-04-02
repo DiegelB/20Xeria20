@@ -10,7 +10,6 @@ def main(ChatBot):
           "\n\n\tType 'exit' to leave and 'h' for more commands.")
     print("\nXeria:", ChatBot.getGreeting()) 
     
-    
     #this is the main loop where the user asks questions and the bot responds
     while True:
         userInput = input(">>")

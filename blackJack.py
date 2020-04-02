@@ -49,7 +49,6 @@ class Dealer:
         return dealerAmt
 
 
-
 class PlayerHand:
 
     def __init__(self,
@@ -65,35 +64,37 @@ class PlayerHand:
         self.betAmount = betAmount
         self.insuranceBet = insuranceBet
 
-
-
 #creates the classes            
 Dealer = Dealer()
 Player = PlayerHand()
 
 #main loop of the program
 def blackJackMain():
-    print("\n\tWelcome to Black Jack! Try and beat the dealer and make $$$.")
     while True:
         system("clear")
-        resetGame() #resets the hands and bet amounts
-        Player.betAmount = int(input("\nHow much would you like to bet? Total chips :"+str(Player.chips)+"\n>>"))
+        print("\n\tWelcome to Black Jack! Try and beat the dealer and make $$$.")
+        choice = input("\nWould you like to play? (y)(n)\n>>")
+        if choice.lower() == 'y':
+            resetGame() #resets the hands and bet amounts
+            Player.betAmount = int(input("\nHow much would you like to bet? Total chips :"+str(Player.chips)+"\n>>"))
 
-        while True: #this is the main loop for the player
-            printHand(Player.mainHand)
-            choice = input("\nType 'h' to hit, 's' to stay, 'i' for insurance\n>>")
-            if choice.lower() == 'h': #adds a card to player hand
-                addToHand(Player.mainHand, 1)
-            elif choice.lower() == 'i': #pays 2:1 for betting the dealer will get 21
-                if Player.insuranceBet != 0:
-                    print("\nYou already have insurance!", str(Player.insuranceBet))
-                    input("Press enter\n")
-                else:
-                    Player.insuranceBet = int(input("\nHow much do you bet that Dealer gets 21?\n>>"))
-                    Player.chips -= Player.insuranceBet
-            elif choice.lower() == 's':
-                winCondition()
-                break
+            while True: #this is the main loop for the player
+                printHand(Player.mainHand)
+                choice = input("\nType 'h' to hit, 's' to stay, 'i' for insurance\n>>")
+                if choice.lower() == 'h': #adds a card to player hand
+                    addToHand(Player.mainHand, 1)
+                elif choice.lower() == 'i': #pays 2:1 for betting the dealer will get 21
+                    if Player.insuranceBet != 0:
+                        print("\nYou already have insurance!", str(Player.insuranceBet))
+                        input("Press enter\n")
+                    else:
+                        Player.insuranceBet = int(input("\nHow much do you bet that Dealer gets 21?\n>>"))
+                        Player.chips -= Player.insuranceBet
+                elif choice.lower() == 's':
+                    winCondition()
+                    break
+        else: break
+
 
 #resets all the saved values
 def resetGame():
@@ -167,17 +168,15 @@ def winCondition():
     else:
         print("\nYou win! Here's ", str(Player.betAmount), " chips.")
         Player.chips += int(Player.betAmount)
+    input("Press enter\n")
     
-    choice = input("\nAgain? (y)(n)\n>>")
-    if choice.lower() == 'y':
-        return
-    else: exit()
+
 
 def lose():
     print("\nYou lose! Thank you for ", str(Player.betAmount), " chips.")
     Player.chips -= int(Player.betAmount)
 
 
-blackJackMain()
+#blackJackMain()
 
 
