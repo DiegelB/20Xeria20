@@ -27,12 +27,14 @@ class Xeria():
                  generalResponse = [],
                  greetings = [],
                  questions = {},
+                 questionsAsked = []
                  ):
 
         self.name = name
         self.generalResponse = generalResponse
         self.greetings = greetings
         self.questions = questions
+        self.questionsAsked = questionsAsked
 
     #there is no save function in scanInput. it only saves input to memory in outputOptions or newQuestion
     def scanInput(self, userInput):
@@ -58,7 +60,7 @@ class Xeria():
     def outputOptions(self, userInput):
         if userInput not in self.generalResponse: #checks to see if user input already in memory 
             self.generalResponse.append(userInput) #adds the users input to general memory if above is tru  
-        if random.randint(1,4) == 5: #bot has 25% chance of asking a question from memory
+        if random.randint(1,4) == 1: #bot has 25% chance of asking a question from memory
             self.askQuestion()
         elif random.randint(1,5) == 1 and User.metUser == False: #chance to get to know the user
             User.meetUser()
@@ -104,18 +106,25 @@ class Xeria():
         self.genResponse()
 
     def askQuestion(self):
-        questionsAsked = []
-        while True:
-            botQuestion = random.choice(list(self.questions)) #picks a random question from memory
-            if botQuestion in questionsAsked: continue
-            else:
-                questionsAsked.append(botQuestion)
-                print("\nXeria: "+botQuestion)
-                userInput = input(">>") #learns a new response to the question if asked
-                self.scanBotOutput(botQuestion, userInput) #scans the bots response for certian key words
-                self.questions[botQuestion].append(userInput)#adds the response to memory
-                self.genResponse()
-                break
+        try:
+            while True:
+                botQuestion = random.choice(list(self.questions)) #picks a random question from memory
+                if botQuestion in self.questionsAsked: continue
+                else:
+                    self.questionsAsked.append(botQuestion)
+                    print("\nXeria: "+botQuestion)
+                    userInput = input(">>") #learns a new response to the question if asked
+                    self.scanBotOutput(botQuestion, userInput) #scans the bots response for certian key words
+                    self.questions[botQuestion].append(userInput)#adds the response to memory
+                    self.genResponse()
+                    break
+        except: 
+            IndexError
+            botQuestion = "Whats up?"
+            userInput = input("\nXeria: "+botQuestion+"\n>>")
+            self.scanBotOutput(botQuestion, userInput)
+            self.genResponse()
+            
   
     def getGreeting(self):
         self.greetings.clear() #clears the greetings list because it populates from memory. this allows to add more greetings
@@ -127,8 +136,13 @@ class Xeria():
             self.greetings.append(file.readline())
 
         #chooses a random greeting then prints it.
-        randGreeting = random.randint(1, lineAmt)
-        return self.greetings[randGreeting]
+        try:
+            randGreeting = random.randint(1, lineAmt)
+            return self.greetings[randGreeting]
+        except: 
+            IndexError
+            return "\nXeria: How are you?"
+
 
     def playGame(self):
         choice = input("\nXeria: Im bored, lets play Black Jack! (y)(n)\n>>")
@@ -136,6 +150,7 @@ class Xeria():
         else: return
 
     def saveBot(self):
+        self.questionsAsked.clear()
         with open("xeriaContents", "wb") as f:
             saveContents = self
             pickle.dump(saveContents, f)
