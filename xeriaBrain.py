@@ -5,13 +5,12 @@
 
 #TODO:
 #      - remember what its said per session to avoid saying it again
-#      - remeber what the user said per session to avoid copying them 
 #      - add tool box:
 #        - command line interface
 #        - calculator
 #        - dice
 
-import pickle, random
+import pickle, random, time
 from loop import main
 from userProfile import User
 from blackJack import blackJackMain
@@ -38,6 +37,7 @@ class Xeria():
 
     #there is no save function in scanInput. it only saves input to memory in outputOptions or newQuestion
     def scanInput(self, userInput):
+        User.whatsBeenSaid.append(userInput)
         nameRules = ["what" in userInput.lower() and "name" in userInput.lower() or
                      "whats" in userInput.lower() and "name" in userInput.lower()]
 
@@ -77,6 +77,10 @@ class Xeria():
 
     def genResponse(self):
         botResponse = random.choice(self.generalResponse)
+        while True:
+            if botResponse in User.whatsBeenSaid:
+                botResponse = random.choice(self.generalResponse)
+            else: break
         if random.randint(1,6) == 1 and User.metUser == True: #if it has met the user it has a chance to personalize the message
             print("\nXeria: "+ botResponse+" "+User.name)
         else:
@@ -106,29 +110,37 @@ class Xeria():
         self.genResponse()
 
     def askQuestion(self):
-        try:
-            while True:
-                botQuestion = random.choice(list(self.questions)) #picks a random question from memory
-                if botQuestion in self.questionsAsked: continue
+        while True:
+            if random.randint(1,3) == 1: #random chance to learn about the users current actions
+                botQuestion = "What are you up to right now?"
+                userInput = input("\nXeria: "+botQuestion+"\n>>")
+                self.scanBotOutput(botQuestion, userInput)
+                self.genResponse()
+                break
+
+            startTime = time.time() #detects inf loops if all questions have been asked.
+            botQuestion = random.choice(list(self.questions)) #picks a random question from memory
+            if botQuestion in self.questionsAsked:
+                if startTime <= 1:
+                    continue
                 else:
-                    self.questionsAsked.append(botQuestion)
-                    print("\nXeria: "+botQuestion)
-                    userInput = input(">>") #learns a new response to the question if asked
-                    self.scanBotOutput(botQuestion, userInput) #scans the bots response for certian key words
-                    self.questions[botQuestion].append(userInput)#adds the response to memory
+                    botQuestion = "Whats up?"
+                    userInput = input("\nXeria: "+botQuestion+"\n>>")
+                    self.scanBotOutput(botQuestion, userInput)
                     self.genResponse()
                     break
-        except: 
-            IndexError
-            botQuestion = "Whats up?"
-            userInput = input("\nXeria: "+botQuestion+"\n>>")
-            self.scanBotOutput(botQuestion, userInput)
-            self.genResponse()
-            
-  
+            else:
+                self.questionsAsked.append(botQuestion)
+                print("\nXeria: "+botQuestion)
+                userInput = input(">>") #learns a new response to the question if asked
+                self.scanBotOutput(botQuestion, userInput) #scans the bots response for certian key words
+                self.questions[botQuestion].append(userInput)#adds the response to memory
+                self.genResponse()
+                break
+     
     def getGreeting(self):
         self.greetings.clear() #clears the greetings list because it populates from memory. this allows to add more greetings
-        lineAmt = 21 #CHANGE THIS TO LINE AMOUNT IN greetings.txt
+        lineAmt = 22 #CHANGE THIS TO LINE AMOUNT IN greetings.txt
         
         #open the greeting file the populate Xeria's greeting list
         file = open('greetings.txt', 'r')
@@ -141,7 +153,7 @@ class Xeria():
             return self.greetings[randGreeting]
         except: 
             IndexError
-            return "\nXeria: How are you?"
+            return " How are you?"
 
 
     def playGame(self):

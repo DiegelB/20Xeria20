@@ -7,13 +7,14 @@ class User():
                  age = 0,
                  job = "Unemployed",
                  currentActions = [],
-
+                 whatsBeenSaid = []
                  ):
         self.metUser = metUser
         self.name = name
         self.age = age
         self.job = job
         self.currentActions = currentActions
+        self.whatsBeenSaid = whatsBeenSaid
         
 
     def meetUser(self):
